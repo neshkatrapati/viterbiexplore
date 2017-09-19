@@ -1,0 +1,21 @@
+{
+  "name": "cykexplore",
+  "authors": [
+    "Ganesh Katrapati <ganesh@swecha.net>"
+  ],
+  "description": "Interactive CYK parser explorer",
+  "main": "index.html",
+  "keywords": [
+    "cyk",
+    "nlp"
+  ],
+  "license": "GPLv3",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CYKExplore</title>
+	<script type="text/javascript" src='bower_components/jquery/dist/jquery.min.js'></script>
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css"></link>
+	<style type="text/css">
+		/*.cyktile {
+			float:right;
+			margin-left:0;
+			margin-right:0;
+		}
+		#cykarea .row{
+			float:right;
+		}
+		#cykarea .col {
+			margin-left:0;	
+			margin-right:0;	
+		}*/
+		.leftspan{
+			background-color:yellow;
+		}
+	</style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">CYK-Explorer</a>
+  
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+    </ul>
+  </div>
+</nav>
+
+
+<div class="main_div">
+	<div class="row" style="margin-top:1%;margin-left:0">
+		<div class="col-md-4" style="padding-right:2px">
+			<div class="card border-dark mb-3">
+				<div class="card-header text-center text-white bg-dark">Grammar</div>
+				<div class="card-body" style="padding:0">
+					
+					<div class="container">		
+						<div class="row" style="margin:3%">
+						<label for='grmselect'> Choose A Grammar : </label>
+						<select id='grmselect'></select>
+						</div>
+						<div class="row">
+						<button type="button" id='view_edit' data-state='view' style="margin:3%;" class="btn btn-dark btn-block">Edit</button>
+							<div class="col-md-6">
+			  					<ul id='grm_view' class="list-group list-group-flush border border-dark">
+								  <li class="list-group-item list-group-item-primary">Non-CNF Rules</li> 
+								</ul>
+								<div id='grm_edit' style="display:none">
+									<textarea id='grm_edit_ta' style="min-height:300px"></textarea>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<ul id='cnf_view' class="list-group list-group-flush border border-dark">
+								  <li class="list-group-item list-group-item-primary">CNF Rules</li>
+								  
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div class="card border-dark mb-3">
+				<div class="card-header text-center text-white bg-dark">Terminal Words</div>
+				<div class="card-body" style="padding:0">
+					
+					<div class="container">					
+						<div class="row">
+							<div class='col-md-12'>
+								<ul id='twords' class="list-group list-group-flush border border-dark">
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<div class="col-md-8" style="padding-left:0px; margin-right:0">
+			<div class="card border-dark mb-3">
+				<div class="card-header text-center text-white bg-dark mb-3">Parser</div>
+				<div class="card-body">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<form class="form-inline">
+								<label for="sentence">Enter Sentence</label>
+								<input id="sentence" type="text" style="margin-left:1%;margin-right:1%;width:75%"/>
+								<button id="parse" type="button" class="btn btn-dark">Parse</button>
+							</form>							
+						</div>						
+					</div>
+					<div class="row" id='control-panel' style='display:none'>
+						<div class='col-md-8 ml-md-auto'>
+							<button id='next' type='button' class='btn btn-dark'>Next</button>			
+							<button id='prev' type='button' class='btn btn-dark'>Previous</button>		
+						</div>						
+					</div>
+					<div class="row">											
+						<div class="col-md-12" id="cykarea">
+						</div>
+					</div>
+				</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+</div>
+<script type="text/javascript" src='grammar.js'></script>
+<script type="text/javascript" src='main.js'></script>
+
+</body>
+</html>
