@@ -1,18 +1,20 @@
 grammars = {
 	'simple' : {
 		'rules' : {
-			'S' : [[ 'NP', 'VP' ], [ '@Aux', 'NP', 'VP' ]],
-			'NP'  : [[ '@DT', '@NN' ], [ '@NN' ]]
+			'S' : [[ 'NP', 'VP' ]],
+			'NP'  : [[ '@DT', '@NN' ], [ '@NN' ]],
+			'VP' : [['@V',  'NP'], ['@V']]
+
 		},
 		'terminals' : {
-			'Aux' : ['is', 'has'],
-			'NN' : ['boy', 'cat'],
-			'DT' : ['a', 'the']
+			'NN' : ['book', 'books'],
+			'DT' : ['a', 'the'],
+			'V' : ['book', 'books']
 		}
 	},
 	'first' : {
 		'rules' : {
-			'S' : [['NP', 'VP'], ['@Aux', 'NP', 'VP']],			
+			'S' : [['NP', 'VP'], ['@Aux', 'NP', 'VP']],
 			'VP' : [['@V', 'NP'], ['VP PP']],
 			'NP' : [['@DT', '@NN'], ['@NN']],
 			'PP' : [['@P', 'NP']]

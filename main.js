@@ -1,12 +1,12 @@
 
 grammar = {};
-cnfGrammar = {}; 
+cnfGrammar = {};
 grammarMap = {};
-terminals = {}; 
+terminals = {};
 sentence = [];
 cykCells = [];
 cykState = [0, 0];
-cykStep = 1; 
+cykStep = 1;
 
 
 //document.getElementById('grmselect').onload = function() {
@@ -20,7 +20,7 @@ $('#grmselect').change(function(event) {
 	grammar = {};
 	cnfGrammar = {};
 	if (val != undefined) {
-		g = grammars[val].rules;		
+		g = grammars[val].rules;
 		grammar = $.extend(true, {}, g);
 		terminals = $.extend(true, {}, grammars[val].terminals);
 		cnfGrammar = $.extend(true, {}, g);
@@ -40,14 +40,14 @@ inArray = function(element, array) {
 			return true;
 		}
 	}
-	return false; 
+	return false;
 }
 
 
 isNonTerminal = function(symbol, grammar) {
 	if (symbol in grammar) {
 		return true;
-	} else if (symbol.slice(0, 1) == '@') { // Explicit Declaration of Nonterminals 
+	} else if (symbol.slice(0, 1) == '@') { // Explicit Declaration of Nonterminals
 		return true;
 	}
 	return false;
@@ -69,18 +69,18 @@ convertRuleToCNF = function(rule_lhs, grammar){
 		}
 		if (rule_rhs.length == 1) { // A -> B; B -> c; Changes to A -> c;
 			if (rule_rhs[0] in grammar) {
-				grammar[rule_lhs].splice(r);				
+				grammar[rule_lhs].splice(r);
 				target_productions = grammar[rule_rhs[0]];
 				for(p in target_productions) {
 					if(inArray(target_productions[p],cnfGrammar[rule_lhs]) == false){
-						new_index = grammar[rule_lhs].push(target_productions[p]);	
+						new_index = grammar[rule_lhs].push(target_productions[p]);
 						new_index = new_index-1;
 						grammarMap[rule_lhs +'.'+new_index] = rule_rhs[0]+'.'+p;
 					}
-				}	
+				}
 
 				convertRuleToCNF(rule_lhs, grammar);
-				
+
 			} else {
 				status = true;
 			}
@@ -88,35 +88,35 @@ convertRuleToCNF = function(rule_lhs, grammar){
 		} else if (rule_rhs.length == 2) {
 			new_rule  = [];
 			for(pos in rule_rhs) { // A -> xy => A -> XY
-				
+
 				if (isNonTerminal(rule_rhs[pos], grammar) == false){
-					
+
 					console.log(rule_lhs, rule_rhs[pos]);
 					non_terminal_len = Object.keys(grammar).length;
 					new_non_terminal = 'X'+(non_terminal_len+1);
 					new_rule[pos] = new_non_terminal;
 					cnfGrammar[new_non_terminal] = [[rule_rhs[pos]]];
 					if ((rule_lhs + '.' + r) in grammarMap) {
-						grammarMap[new_non_terminal + '.' + r] = grammarMap[rule_lhs + '.' + r];	
+						grammarMap[new_non_terminal + '.' + r] = grammarMap[rule_lhs + '.' + r];
 					} else {
 						grammarMap[new_non_terminal+'.'+0] = rule_lhs + '.' + r;
 					}
 
 				} else {
 					new_rule[pos] = rule_rhs[pos];
-				}				
+				}
 			}
-			
+
 			//rule_rhs = new_rule;
 			grammar[rule_lhs][r] = new_rule;
 			if ((rule_lhs + '.' + r) in grammarMap) {
-				grammarMap[rule_lhs + '.' + r] = grammarMap[rule_lhs + '.' + r];	
-			} 
+				grammarMap[rule_lhs + '.' + r] = grammarMap[rule_lhs + '.' + r];
+			}
 			else {
 				grammarMap[rule_lhs+'.'+r] = rule_lhs+'.'+r;
-			
+
 			}
-		
+
 		} else if (rule_rhs.length > 2) {
 
 			first_part = rule_rhs.slice(0, 1);
@@ -126,10 +126,10 @@ convertRuleToCNF = function(rule_lhs, grammar){
 			new_rule = [first_part[0], new_non_terminal];
 			grammar[rule_lhs][r] = new_rule;
 			if ((rule_lhs + '.' + r) in grammarMap) {
-				grammarMap[new_non_terminal+'.'+0] = grammarMap[rule_lhs + '.' + r];	
+				grammarMap[new_non_terminal+'.'+0] = grammarMap[rule_lhs + '.' + r];
 			} else {
 				grammarMap[rule_lhs+'.'+r] = rule_lhs + '.' + r;
-				grammarMap[new_non_terminal+'.'+0] = rule_lhs + '.' + r;	
+				grammarMap[new_non_terminal+'.'+0] = rule_lhs + '.' + r;
 			}
 
 			convertRuleToCNF(new_non_terminal, grammar);
@@ -174,7 +174,7 @@ showGrammarInTextArea = function() {
 	for (rule_lhs in grammar) {
 		//console.log(rule_lhs);
 		if(rule_lhs != undefined){
-			for(r in grammar[rule_lhs]) {					
+			for(r in grammar[rule_lhs]) {
 				rule_rhs = grammar[rule_lhs][r];
 
 				if (rule_rhs != undefined){
@@ -197,7 +197,7 @@ showGrammar = function () {
 		for(r in grammar[rule_lhs]){
 			rule_rhs = grammar[rule_lhs][r];
 			rule = rule_lhs + " -> " + rule_rhs.join(' ');
-			$('#grm_view').append('<li class="list-group-item list-group-item-action grmrule" id="G'+rule_lhs+'.'+r+'".>'+rule+'</li>');		
+			$('#grm_view').append('<li class="list-group-item list-group-item-action grmrule" id="G'+rule_lhs+'.'+r+'".>'+rule+'</li>');
 		}
 	}
 	for (rule_lhs in cnfGrammar) {
@@ -206,10 +206,10 @@ showGrammar = function () {
 			rule_rhs = cnfGrammar[rule_lhs][r];
 
 			rule = rule_lhs + " -> " + rule_rhs.join(' ');
-			$('#cnf_view').append('<li class="list-group-item list-group-item-action cnfrule" id="'+rule_lhs+'.'+r+'".>'+rule+'</li>');		
+			$('#cnf_view').append('<li class="list-group-item list-group-item-action cnfrule" id="'+rule_lhs+'.'+r+'".>'+rule+'</li>');
 		}
 	}
-	
+
 	showTerminals();
 
 	$('.cnfrule').click(function(event) {
@@ -233,10 +233,10 @@ showTerminals = function() {
 $('#view_edit').click(function() {
 	state = $('#view_edit').attr('data-state');
 	if (state == 'view') {
-		$('#grm_edit').show();		
+		$('#grm_edit').show();
 		showGrammarInTextArea();
 		$('#grm_view').hide();
-		
+
 		state = 'edit';
 		$('#view_edit').html('Save & View');
 
@@ -253,7 +253,7 @@ $('#view_edit').click(function() {
 
 $('#parse').click(function(event) {
 	cykCells = [];
-	$('#cykarea').html('');	
+	$('#cykarea').html('');
 	$('#control-panel').show();
 	text = $('#sentence').val();
 	words = text.split(' ');
@@ -262,7 +262,7 @@ $('#parse').click(function(event) {
 	html += "<table class='table'>";
 	for (i = 0; i < words.length; i++){
 			html += '<th>'+words[i]+'('+i+')</th>';
-			
+
 	}
 	for (i = 0; i < words.length; i++){
 		//html += '<div class="row">';
@@ -332,7 +332,7 @@ getTerminalRules = function(word) {
 	for(term in terminals) {
 		for (v in terminals[term]) {
 			if (word.trim() == terminals[term][v].trim()) {
-				terminal_rules.push(term);	
+				terminal_rules.push(term);
 			}
 		}
 		//if (word in terminals[term]) {
@@ -346,12 +346,57 @@ showRules = function(rules, state) {
 	cell = $('#c'+state[0]+'-'+state[1]);
 	cell.html('');
 	html = '<ul class="list-group list-group-flush">';
+
 	for(r =0; r < rules.length; r++) {
-		rl = rules[r];
-		html += '<li class="list-group-item">' + rl[0] + ' -> ' + rl[1].join(' ') + '</li>';
+		data_id = state[0] + '-' + state[1] + '-' + r;
+		rl = rules[r][0];
+		rlmeta = rules[r][1];
+		var btnhtml = "";
+		var vbtnhtml = "";
+		var placeholder = '<label class="cykcellrulelabel" id="crl'+data_id+'" style="float:right"></label>';
+		if(rlmeta[3] != -1) { // Non terminal.
+
+			btnhtml = '<button class="btn badge badge-success traceshow" data-id='+data_id+' type="button" style="float:right">T</button>';
+			vbtnhtml = '<button class="btn badge badge-warning treeshow" data-id='+data_id+' type="button" style="float:right; padding-left:1%">V</button>';
+		}
+
+		html += '<li id="cr'+data_id+'" class="list-group-item cykcellrule">' + rl[0] + ' -> ' + rl[1].join(' ') + btnhtml + vbtnhtml + placeholder + '</li>';
 	}
 	html += "</ul>";
 	cell.html(html);
+
+	$('.traceshow').click(function(event) {
+		data_id = $(this).attr('data-id');
+		data_items = data_id.split('-');
+		var cykCell = cykCells[data_items[0]][data_items[1]];
+		var rulemeta = cykCell[data_items[2]][1];
+		console.log(rulemeta);
+		$('.cykcellrule').removeClass('bg-danger');
+		$('.cykcellrulelabel').html("");
+		traceCells(rulemeta[0], rulemeta[2], '1', 'L');
+		traceCells(rulemeta[1], rulemeta[3],'1', 'R');
+	});
+
+	$('.treeshow').click(function(event) {
+		data_id = $(this).attr('data-id');
+		data_items = data_id.split('-');
+		$('#treeModal').modal('show');
+	});
+}
+
+
+
+traceCells = function(cykState, rule, nesting, dir) {
+	element = $('#cr'+cykState[0]+'-'+cykState[1]+'-'+rule);
+	element2 = $('#crl'+cykState[0]+'-'+cykState[1]+'-'+rule);
+	element.addClass('bg-danger');
+	element2.html(nesting + '-' + dir);
+	if (cykState[0] != cykState[1]) {
+		var cykCell = cykCells[cykState[0]][cykState[1]];
+		var rulemeta = cykCell[rule][1];
+		traceCells(rulemeta[0], rulemeta[2], nesting + '.1', 'L');
+		traceCells(rulemeta[1], rulemeta[3], nesting + '.1', 'R');
+	}
 }
 
 
@@ -378,23 +423,55 @@ getFollowUpRules = function(rule) {
 }
 
 $('#next').click(function(event) {
-	if(cykState[0] == cykState[1]) { 
-		getTerminals();		
+	if(cykState[0] == cykState[1]) {  // Terminal Rules
+		getTerminals();
 		word = sentence[cykState[0]];
 		terminal_rules = getTerminalRules(word);
 		rules = []
 		for(t in terminal_rules) {
-			rules.push([terminal_rules[t], [word]]);
+			rules.push([['@'+terminal_rules[t], [word]], [cykState, cykState, parseInt(t), -1]]);
 			fxrules = getFollowUpRules(['@'+terminal_rules[t]]);
 			for(j =0; j < fxrules.length; j++){
-				rules.push(fxrules[j]);
+				rules.push([fxrules[j], [cykState, cykState, parseInt(t)+j+1, -1]]);
 			}
 		}
-		showRules(rules, cykState);	
-		
+		showRules(rules, cykState);
+
 		cykCells[cykState[0]][cykState[1]] = rules;
 	}
-	if (cykState[1] >= sentence.length - 1) {
+	else { // Non Terminal Rules
+		var rules = [];
+		for(var i = cykState[0]; i < cykState[1]; i++) {
+			var left_part = [cykState[0], i];
+			var right_part = [i + 1, cykState[1]];
+			var left_rules = cykCells[left_part[0]][left_part[1]];
+			var right_rules = cykCells[right_part[0]][right_part[1]];
+			console.log("CYK Cell", cykState, "Can be made up by", left_part, '-', right_part);
+			console.log("Left Rules", left_rules);
+			console.log("Right Rules", right_rules);
+			for(var lid = 0; lid < left_rules.length; lid++) {
+				var left_rule = left_rules[lid][0][0] // Take only LHS
+				for(var rid =0; rid < right_rules.length; rid++) {
+					var right_rule = right_rules[rid][0][0];
+					var combinations = getFollowUpRules([left_rule, right_rule]);
+					console.log("Found combination for", left_rule, '-', right_rule, combinations);
+					for(var cid =0; cid < combinations.length; cid++) {
+						rules.push([combinations[cid], [left_part, right_part, lid, rid]]);
+					}
+				}
+			}
+
+		}
+		showRules(rules, cykState);
+		cykCells[cykState[0]][cykState[1]] = rules;
+
+
+	}
+	if (cykState[0] == 0 && cykState[1] == sentence.length - 1) {
+		alert("We are done !");
+	}
+	else if (cykState[1] >= sentence.length - 1) {
+
 		cykState[0] = 0;
 		cykState[1] = cykStep;
 		cykStep += 1;
