@@ -380,12 +380,48 @@ showRules = function(rules, state) {
 	$('.treeshow').click(function(event) {
 		data_id = $(this).attr('data-id');
 		data_items = data_id.split('-');
+		var graph = "digraph g {";
+		graph += getGraph([data_items[0], data_items[1]], data_items[2]);
+		graph += "}";
+		console.log(graph);
+		var image = Viz(graph, { format: "png-image-element" });
+		$('#treeModalBody').html(image);
 		$('#treeModal').modal('show');
 	});
 }
 
 
+getGraph = function(cykState, rid) {
 
+	var graph = "";
+	var cykCell = cykCells[cykState[0]][cykState[1]];
+	var rule = cykCell[rid][0];
+	var rulemeta = cykCell[rid][1];
+	var new_rhs = [];
+	if (cykState[0] != cykState[1]) {
+		for(var p = 0; p < rule[1].length; p++) {
+			//new_rhs.push(rule[1][p].replace('@', ''));
+			var production = rule[0].replace('@','') + ' -> ' + rule[1][p].replace('@','');
+			graph += '\n\t' + production + '\n';
+			graph += getGraph(rulemeta[p], rulemeta[p+2]);
+
+		}
+	}
+	else if(rule[1][0][0] == '@')  { // Pseudo NT
+		graph += '\n\t' + rule[0].replace('@', '') + ' -> ' + rule[1][0].replace('@', '') + '\n';
+		for(var rj =0; rj < cykCell.length; rj++) {
+				var rj_rule = cykCell[rj][0];
+				if (rj_rule[0] == rule[1][0]) {
+					graph += '\n\t' + rj_rule[0].replace('@', '') + ' -> ' + rj_rule[1][0] + '\n';
+				}
+		}
+	}
+	else {
+		graph += '\n\t' + rule[0].replace('@', '') + ' -> ' + rule[1][0].replace('@', '') + '\n';
+	}
+	//graph += "}";
+	return graph;
+}
 traceCells = function(cykState, rule, nesting, dir) {
 	element = $('#cr'+cykState[0]+'-'+cykState[1]+'-'+rule);
 	element2 = $('#crl'+cykState[0]+'-'+cykState[1]+'-'+rule);
