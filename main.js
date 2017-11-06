@@ -7,16 +7,22 @@ sentence = [];
 cykCells = [];
 cykState = [0, 0];
 cykStep = 1;
-
+current_grammar_name = "";
 
 //document.getElementById('grmselect').onload = function() {
-$('#grmselect').append('<option value="">--Select--</option>');
-for(grammar_name in grammars){
-	$('#grmselect').append('<option value="'+grammar_name+'">'+grammar_name+'</option>');
+load_grammars = function() {	
+
+	$('#grmselect').html('<option value="">--Select--</option>');
+	for(grammar_name in grammars){
+		$('#grmselect').append('<option value="'+grammar_name+'">'+grammar_name+'</option>');
+	}
 }
+
+load_grammars();
 
 $('#grmselect').change(function(event) {
 	val = $(this).val();
+	current_grammar_name = val;
 	grammar = {};
 	cnfGrammar = {};
 	if (val != undefined) {
@@ -271,6 +277,32 @@ $('#view_edit').click(function() {
 	$('#view_edit').attr('data-state', state);
 });
 
+
+$('#view_export').click(function() {
+	console.log('Exporting', current_grammar_name);
+	var to_export = {};
+	to_export[current_grammar_name] = grammars[current_grammar_name];
+	var export_string = JSON.stringify(to_export, null, 2);
+	$('#exportModalBody').html('<code><pre>' + export_string + '</pre></code>');
+	$('#exportModal').modal('show');
+	//alert(JSON.stringify(to_export, null, 2));
+});
+
+$('#view_grm_add').click(function() {
+	var url = $('#grmadd').val();
+	$.ajax({
+  		url: url,
+  		context: document.body
+	}).done(function(data) {
+  		data = JSON.parse(data);
+  		for(var grm in data) {
+  			grammars[grm] = data[grm];
+  		}
+  		load_grammars();
+	});
+});
+
+
 $('#parse').click(function(event) {
 	cykCells = [];
 	$('#cykarea').html('');
@@ -434,12 +466,12 @@ getGraph = function(cykState, rid) {
 		for(var rj =0; rj < cykCell.length; rj++) {
 				var rj_rule = cykCell[rj][0];
 				if (rj_rule[0] == rule[1][0]) {
-					graph += '\n\t' + rj_rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rj_rule[1][0] + '\n';
+					graph += '\n\t' + rj_rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rj_rule[1][0] + rule_lhs_append + '\n';
 				}
 		}
 	}
 	else {
-		graph += '\n\t' + rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rule[1][0].replace('@', '') + '\n';
+		graph += '\n\t' + rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rule[1][0].replace('@', '') + rule_lhs_append + '\n';
 	}
 	//graph += "}";
 	return graph;

@@ -49,8 +49,24 @@
 						<label for='grmselect'> Choose A Grammar : </label>
 						<select id='grmselect'></select>
 						</div>
+						<div class="row">							
+							<div class="col-md-8">
+								<div class="row">
+								<div class="col-md-4">
+									<label for='grmadd'> Add Grammars From : </label>
+								</div>
+								<div class="col-md-8" >
+									<input id='grmadd' style="width: 100%" type="text"></input>
+								</div>
+								</div>
+							</div>
+							<div class="col-md-4">
+							<button type="button" id='view_grm_add' data-state='view'  class="btn btn-dark btn-block">Add</button>
+							</div>
+						</div>
 						<div class="row">
-						<button type="button" id='view_edit' data-state='view' style="margin:3%;" class="btn btn-dark btn-block">Edit</button>
+						<button type="button" id='view_edit' data-state='view' style="margin:3%;margin-bottom: 0%" class="btn btn-dark btn-block">Edit</button>
+						<button type="button" id='view_export' data-state='view' style="margin: 3%;" class="btn btn-dark btn-block">Export</button>
 							<div class="col-md-6">
 			  					<ul id='grm_view' class="list-group list-group-flush border border-dark">
 								  <li class="list-group-item list-group-item-primary">Non-CNF Rules</li>
@@ -136,6 +152,26 @@
     </div>
   </div>
 </div>
+
+<div id="exportModal" aria-labelledby="exportModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Export View &raquo; Copy the following JSON</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="exportModalBody">
+        <p></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 <script type="text/javascript" src='grammar.js'></script>
