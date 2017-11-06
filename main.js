@@ -82,6 +82,8 @@ convertRuleToCNF = function(rule_lhs, grammar){
 				convertRuleToCNF(rule_lhs, grammar);
 
 			} else {
+				console.log('Hello', r, rule_lhs, rule_rhs[0]);
+				grammarMap[rule_lhs +'.'+r] = rule_lhs+'.'+r;
 				status = true;
 			}
 
@@ -104,6 +106,7 @@ convertRuleToCNF = function(rule_lhs, grammar){
 
 				} else {
 					new_rule[pos] = rule_rhs[pos];
+					//console.log('Hello', new_rule[pos], rule_rhs[pos]);
 				}
 			}
 
@@ -197,7 +200,7 @@ showGrammar = function () {
 		for(r in grammar[rule_lhs]){
 			rule_rhs = grammar[rule_lhs][r];
 			rule = rule_lhs + " -> " + rule_rhs.join(' ');
-			$('#grm_view').append('<li class="list-group-item list-group-item-action grmrule" id="G'+rule_lhs+'.'+r+'".>'+rule+'</li>');
+			$('#grm_view').append('<li class="list-group-item list-group-item-action grmrule" id="G'+rule_lhs+'.'+r+'">'+rule+'</li>');
 		}
 	}
 	for (rule_lhs in cnfGrammar) {
@@ -206,7 +209,7 @@ showGrammar = function () {
 			rule_rhs = cnfGrammar[rule_lhs][r];
 
 			rule = rule_lhs + " -> " + rule_rhs.join(' ');
-			$('#cnf_view').append('<li class="list-group-item list-group-item-action cnfrule" id="'+rule_lhs+'.'+r+'".>'+rule+'</li>');
+			$('#cnf_view').append('<li class="list-group-item list-group-item-action cnfrule" id="'+rule_lhs+'.'+r+'">'+rule+'</li>');
 		}
 	}
 
@@ -214,9 +217,26 @@ showGrammar = function () {
 
 	$('.cnfrule').click(function(event) {
 		grmFrom = grammarMap[$(this).attr('id')];
+		$('.cnfrule').removeClass('list-group-item-success');
 		$('.grmrule').removeClass('list-group-item-danger');
 		$('#G'+grmFrom.replace('.', '\\.')).addClass('list-group-item-danger');
 	});
+	
+	$('.grmrule').click(function(event) {
+		$('.cnfrule').removeClass('list-group-item-success');
+		$('.grmrule').removeClass('list-group-item-danger');
+		var rule_id = $(this).attr('id').slice(1, $(this).attr('id').length);
+		for(var cnfRule in grammarMap){
+			var gRule = grammarMap[cnfRule];		
+			if(rule_id == gRule) {				
+				$('#'+cnfRule.replace('.', '\\.')).addClass('list-group-item-success');
+			}
+		}
+		// grmFrom = grammarMap[$(this).attr('id')];
+		// $('.grmrule').removeClass('list-group-item-danger');
+		// $('#G'+grmFrom.replace('.', '\\.')).addClass('list-group-item-danger');
+	});
+
 }
 
 
@@ -281,7 +301,7 @@ $('#parse').click(function(event) {
 	}
 	html += "</table>";
 	$('#cykarea').html(html);
-
+	$('#c0-0').parent().addClass('bg-info');
 	$('.splitshow').click(function(event) {
 		$('#splits').html('');
 		data_id = $(this).attr('data-id');
@@ -398,26 +418,28 @@ getGraph = function(cykState, rid) {
 	var rule = cykCell[rid][0];
 	var rulemeta = cykCell[rid][1];
 	var new_rhs = [];
+	var rule_lhs_append = '_'+cykState.join('_');
 	if (cykState[0] != cykState[1]) {
 		for(var p = 0; p < rule[1].length; p++) {
 			//new_rhs.push(rule[1][p].replace('@', ''));
-			var production = rule[0].replace('@','') + ' -> ' + rule[1][p].replace('@','');
+			var rule_rhs_append = '_' + rulemeta[p].join('_');
+			var production = rule[0].replace('@','') + rule_lhs_append + ' -> ' + rule[1][p].replace('@','') + rule_rhs_append;
 			graph += '\n\t' + production + '\n';
 			graph += getGraph(rulemeta[p], rulemeta[p+2]);
 
 		}
 	}
 	else if(rule[1][0][0] == '@')  { // Pseudo NT
-		graph += '\n\t' + rule[0].replace('@', '') + ' -> ' + rule[1][0].replace('@', '') + '\n';
+		graph += '\n\t' + rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rule[1][0].replace('@', '') + rule_lhs_append + '\n';
 		for(var rj =0; rj < cykCell.length; rj++) {
 				var rj_rule = cykCell[rj][0];
 				if (rj_rule[0] == rule[1][0]) {
-					graph += '\n\t' + rj_rule[0].replace('@', '') + ' -> ' + rj_rule[1][0] + '\n';
+					graph += '\n\t' + rj_rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rj_rule[1][0] + '\n';
 				}
 		}
 	}
 	else {
-		graph += '\n\t' + rule[0].replace('@', '') + ' -> ' + rule[1][0].replace('@', '') + '\n';
+		graph += '\n\t' + rule[0].replace('@', '') + rule_lhs_append + ' -> ' + rule[1][0].replace('@', '') + '\n';
 	}
 	//graph += "}";
 	return graph;
@@ -438,16 +460,16 @@ traceCells = function(cykState, rule, nesting, dir) {
 
 getFollowUpRules = function(rule) {
 	var rules = [];
-	rjson = JSON.stringify(rule);
+	var rjson = JSON.stringify(rule);
 	for(rule_lhs in cnfGrammar) {
 		for(i =0; i< cnfGrammar[rule_lhs].length; i++) {
-			rxjson = JSON.stringify(cnfGrammar[rule_lhs][i]);
-
+			var rxjson = JSON.stringify(cnfGrammar[rule_lhs][i]);
+			//console.log(rule_lhs, rxjson, rjson);
 			if(rjson == rxjson) {
 
 				rules.push([rule_lhs, rule]);
-				console.log(rules);
-				fxrules = getFollowUpRules([rule_lhs]);
+				//console.log('Follow up for', rule, rule_lhs);
+				var fxrules = getFollowUpRules([rule_lhs]);
 				for(j =0; j < fxrules.length; j++){
 					rules.push(fxrules[j]);
 				}
@@ -490,7 +512,10 @@ $('#next').click(function(event) {
 				for(var rid =0; rid < right_rules.length; rid++) {
 					var right_rule = right_rules[rid][0][0];
 					var combinations = getFollowUpRules([left_rule, right_rule]);
-					console.log("Found combination for", left_rule, '-', right_rule, combinations);
+
+					if(combinations.length > 0) {
+						console.log("Found combination for", left_rule, '-', right_rule, combinations);
+					}
 					for(var cid =0; cid < combinations.length; cid++) {
 						rules.push([combinations[cid], [left_part, right_part, lid, rid]]);
 					}
@@ -515,4 +540,7 @@ $('#next').click(function(event) {
 		cykState[0] += 1;
 		cykState[1] += 1;
 	}
+	$('.card-body').parent().removeClass('bg-info');
+	$('#c'+cykState.join('-')).parent().addClass('bg-info');
+	//console.log('#c'+cykState.join('-'));
 });

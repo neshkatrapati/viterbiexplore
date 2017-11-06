@@ -1,7 +1,7 @@
 grammars = {
 	'simple' : {
 		'rules' : {
-			'S' : [[ 'NP', 'VP' ]],
+			'S' : [[ 'NP', 'VP' ], ['VP']],
 			'NP'  : [[ '@DT', '@NN' ], [ '@NN' ]],
 			'VP' : [['@V',  'NP'], ['@V']]
 
@@ -14,9 +14,9 @@ grammars = {
 	},
 	'first' : {
 		'rules' : {
-			'S' : [['NP', 'VP'], ['@Aux', 'NP', 'VP']],
-			'VP' : [['@V', 'NP'], ['VP PP']],
-			'NP' : [['@DT', '@NN'], ['@NN']],
+			'S' : [['NP', 'VP'], ['@Aux', 'NP', 'VP'], ['VP']],
+			'VP' : [['@V', 'NP'], ['VP', 'PP'], ['@V']],
+			'NP' : [['@DT', '@NN'], ['@NN'], ['NP', 'PP']],
 			'PP' : [['@P', 'NP']]
 		},
 		'terminals' : {
