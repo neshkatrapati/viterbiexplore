@@ -286,7 +286,13 @@ $('#view_edit').click(function() {
 $('#view_export').click(function() {
 	console.log('Exporting', current_grammar_name);
 	var to_export = {};
-	to_export[current_grammar_name] = grammars[current_grammar_name];
+	if(current_grammar_name.length > 0){
+		to_export[current_grammar_name] = grammars[current_grammar_name];
+	}
+	else {
+		getTerminals();
+		to_export["grammar_1"] = {rules : grammar, terminals: terminals};
+	}
 	var export_string = JSON.stringify(to_export, null, 2);
 	$('#exportModalBody').html('<code><pre>' + export_string + '</pre></code>');
 	$('#exportModal').modal('show');
