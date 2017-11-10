@@ -30,7 +30,7 @@ $('#grmselect').change(function(event) {
 		grammar = $.extend(true, {}, g);
 		terminals = $.extend(true, {}, grammars[val].terminals);
 		cnfGrammar = $.extend(true, {}, g);
-		convertToCNF();
+		convertToCNF(grammar);
 		showGrammar();
 	}
 });
@@ -147,7 +147,7 @@ convertRuleToCNF = function(rule_lhs, grammar){
 
 	}
 }
-convertToCNF = function() {
+convertToCNF = function(grammar) {
 	//terminals = {};
 	cnfGrammar = $.extend(true, {}, grammar);
 	for(rule_lhs in cnfGrammar){
@@ -161,7 +161,7 @@ processGrammar = function(grammar) {
 	grammar_text = $('#grm_edit_ta').val();
 	grammar_lines = grammar_text.split('\n');
 	//grammar = grammar_lines;
-	grammar = {};
+	var gram = {};
 	for (grammar_rid in grammar_lines) {
 		grammar_rule = grammar_lines[grammar_rid];
 		if (grammar_rule.length > 0) {
@@ -169,13 +169,15 @@ processGrammar = function(grammar) {
 			rule_lhs = grammar_components[0].trim();
 			rule_rhs = grammar_components[1].trim().split(' ');
 			//grammar.push([rule_lhs,rule_rhs]);
-			if ((rule_lhs in grammar) == false) {
-				grammar[rule_lhs] = [];
+			if ((rule_lhs in gram) == false) {
+				gram[rule_lhs] = [];
 			}
-			grammar[rule_lhs].push(rule_rhs);
+			gram[rule_lhs].push(rule_rhs);
 		}
 	}
-	convertToCNF();
+	grammar = $.extend(true,{},gram);
+	convertToCNF(gram);
+	return grammar;
 }
 
 showGrammarInTextArea = function() {
@@ -258,6 +260,7 @@ showTerminals = function() {
 
 $('#view_edit').click(function() {
 	state = $('#view_edit').attr('data-state');
+//	console.log("asdashdjasdjasdj");
 	if (state == 'view') {
 		$('#grm_edit').show();
 		showGrammarInTextArea();
@@ -267,7 +270,9 @@ $('#view_edit').click(function() {
 		$('#view_edit').html('Save & View');
 
 	} else {
-		processGrammar(grammar);
+//		console.log("Hello");
+		grammar = {};
+		grammar = processGrammar(grammar);
 		showGrammar();
 		$('#grm_view').show();
 		$('#grm_edit').hide();
