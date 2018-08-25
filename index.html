@@ -1,183 +1,107 @@
-<!DOCTYPE html>
+<!DOCTYPE <!DOCTYPE html>
 <html>
 <head>
-	<title>CYKExplore</title>
-	<script type="text/javascript" src='bower_components/jquery/dist/jquery.min.js'></script>
-	<script type="text/javascript" src='bower_components/viz-lite.js'></script>
-
-	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css"></link>
-
-	<style type="text/css">
-		/*.cyktile {
-			float:right;
-			margin-left:0;
-			margin-right:0;
-		}
-		#cykarea .row{
-			float:right;
-		}
-		#cykarea .col {
-			margin-left:0;
-			margin-right:0;
-		}*/
-		.leftspan{
-			background-color:yellow;
-		}
-	</style>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Viterbi Explore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/materialize/css/materialize.min.css" />
+    
 </head>
 <body>
-
-<nav class="navbar navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">CYK-Explorer</a>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-    </ul>
-  </div>
-</nav>
-
-
-<div class="main_div">
-	<div class="row" style="margin-top:1%;margin-left:0">
-		<div class="col-md-4" style="padding-right:2px">
-			<div class="card border-dark mb-3">
-				<div class="card-header text-center text-white bg-dark">Grammar</div>
-				<div class="card-body" style="padding:0">
-
-					<div class="container">
-						<div class="row" style="margin:3%">
-						<label for='grmselect'> Choose A Grammar : </label>
-						<select id='grmselect'></select>
-						</div>
-						<div class="row">							
-							<div class="col-md-8">
-								<div class="row">
-								<div class="col-md-4">
-									<label for='grmadd'> Add Grammars From : </label>
-								</div>
-								<div class="col-md-8" >
-									<input id='grmadd' style="width: 100%" type="text"></input>
-								</div>
-								</div>
-							</div>
-							<div class="col-md-4">
-							<button type="button" id='view_grm_add' data-state='view'  class="btn btn-dark btn-block">Add</button>
-							</div>
-						</div>
-						<div class="row">
-						<button type="button" id='view_edit' data-state='view' style="margin:3%;margin-bottom: 0%" class="btn btn-dark btn-block">Edit</button>
-						<button type="button" id='view_export' data-state='view' style="margin: 3%;" class="btn btn-dark btn-block">Export</button>
-							<div class="col-md-6">
-			  					<ul id='grm_view' class="list-group list-group-flush border border-dark">
-								  <li class="list-group-item list-group-item-primary">Non-CNF Rules</li>
-								</ul>
-								<div id='grm_edit' style="display:none">
-									<textarea id='grm_edit_ta' style="min-height:300px"></textarea>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<ul id='cnf_view' class="list-group list-group-flush border border-dark">
-								  <li class="list-group-item list-group-item-primary">CNF Rules</li>
-
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div class="card border-dark mb-3">
-				<div class="card-header text-center text-white bg-dark">Terminal Words</div>
-				<div class="card-body" style="padding:0">
-
-					<div class="container">
-						<div class="row">
-							<div class='col-md-12'>
-								<ul id='twords' class="list-group list-group-flush border border-dark">
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-		<div class="col-md-8" style="padding-left:0px; margin-right:0">
-			<div class="card border-dark mb-3">
-				<div class="card-header text-center text-white bg-dark mb-3">Parser</div>
-				<div class="card-body">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-12">
-							<form class="form-inline">
-								<label for="sentence">Enter Sentence</label>
-								<input id="sentence" type="text" style="margin-left:1%;margin-right:1%;width:75%"/>
-								<button id="parse" type="button" class="btn btn-dark">Parse</button>
-							</form>
-						</div>
-					</div>
-					<div class="row" id='control-panel' style='display:none'>
-						<div class='col-md-8 ml-md-auto'>
-							<button id='next' type='button' class='btn btn-dark'>Next</button>
-							<button id='prev' type='button' class='btn btn-dark'>Previous</button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12" id="cykarea">
-						</div>
-					</div>
-				</div>
-				</div>
-			</div>
-		</div>
-
-	</div>
-</div>
-
-<div id="treeModal" aria-labelledby="treeModal" class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Syntax Tree View</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="treeModalBody">
-        <p></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+    <div class="navbar-fixed cyan darken-1">
+      <nav>
+        <div class="nav-wrapper cyan darken-1">
+          <a href="#" class="brand-logo" style="padding-left:2%">Viterbi Explore</a>          
+        </div>
+      </nav>
     </div>
-  </div>
-</div>
+    <div class="container" style="width:100%">
+        <div class="row">'
+            <div class="card">
+                <div class="card-content ">
+                    <span class="card-title">Viterbi</span>
+                    <div id='viterbi-outer'>
+                        <table class="">
+                            <tr>
+                                <td>Sentence</td>
+                                <td><input type="text" id='sentence_input'></td>
+                                <td><a href="#" class="waves-effect waves-light btn" id='viterbi_go'>Go !</a></td>
+                            </tr>
+                        </table>
+                        <div id='viterbi'>
+                            
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+        </div>
+        <div class="row">
+            <div class="card col s12 cyan lighten-1">
+                <div class="card-content white-text">
+                    <span class="card-title ">Tags & Tokens <a href="#" class="waves-effect waves-light btn right" id='tokens_tags_update'>Update</a> </span>
+                    <div>
+                        <table class="">
+                            <tbody>
+                                <tr>
+                                    <td>Corpus</td>
+                                    <td>
+                                        <div  style="display: inline-block">
+                                            <select id='corpora'>
+                                                <option value="">--Select--</option>
+                                                <option value="test.corpus">Test Corpus</option>
+                                                <option value="wsj.corpus">WSJ Corpus</option>
+                                            </select>
+                                        </div>
+                                        <a href="#" id='load_corpus' class="waves-effect waves-light btn">Load</a>
+                                    </td>
+                                </tr>        
+                                <tr>
+                                    <td>Tags</td>
+                                    <td><input type="text" id='tags_list' placeholder="T1,T2,T3"></td>
+                                </tr>
+                                <tr>
+                                    <td>Tokens</td>
+                                    <td><input type="text" id='token_list' placeholder="W1,W2,W3"></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>                
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            
+            <div class="card col s6">
+                <div class="card-content">
+                    <span class="card-title">Emission Probabilites</span>   
+                    <div id='emission_reg'></div>                 
+                </div>
+            </div>
 
-<div id="exportModal" aria-labelledby="exportModal" class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Export View &raquo; Copy the following JSON</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="exportModalBody">
-        <p></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
+
+            <div class="card col s6" style="">
+                    <div class="card-content" style="overflow-x:scroll">
+                        <span class="card-title">Transition Probabilites</span>                    
+                        <div id='transition_reg'></div>
+                    </div>
+                </div>
+
+        </div>
     </div>
-  </div>
-</div>
+    <script src="assets/jquery.min.js"></script>
+    <script src='main.js'></script>
 
-
-
-<script type="text/javascript" src='grammar.js'></script>
-<script type="text/javascript" src='main.js'></script>
-<script type="text/javascript" src="popper.min.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
+    <script type="text/javascript">
+     $(document).ready(function(){
+        $('select').formSelect();
+     });
+       
+    </script>
+    
+    <script src="assets/materialize/js/materialize.min.js"></script>
 </body>
 </html>
