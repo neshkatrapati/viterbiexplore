@@ -447,7 +447,8 @@ showRules = function(rules, state) {
 		graph += getGraph([data_items[0], data_items[1]], data_items[2]);
 		graph += "}";
 		console.log(graph);
-		var image = Viz(graph, { format: "png-image-element" });
+	        var image = Viz(graph, { format: "png-image-element" });
+	    console.log(image);
 		$('#treeModalBody').html(image);
 		$('#treeModal').modal('show');
 	});
